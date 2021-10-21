@@ -32,8 +32,8 @@ public class HiloCliente extends Thread{
         while(true){
             try{
                 entrada=new DataInputStream(SocketCliente.getInputStream());
-                cliente.mensajeria(entrada.readUTF());
                 
+                cliente.mensajeria2(entrada.readUTF());
                 entradaObjeto=new ObjectInputStream(SocketCliente.getInputStream());
                 cliente.actualizarLista((DefaultListModel)entradaObjeto.readObject());
                 

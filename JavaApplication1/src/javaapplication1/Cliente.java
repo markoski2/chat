@@ -44,6 +44,16 @@ public class Cliente extends javax.swing.JFrame {
     this.jTextArea1.append(" "+msg+"\n");
     }
     
+    public void mensajeria2(String msg){
+        String desencryptador="";
+                int ascii=0;
+                for(int i=0;i<msg.length();i++){
+                    ascii=msg.charAt(i);
+                    desencryptador=desencryptador+(char)(ascii-3);
+                }
+    this.jTextArea1.append(" "+desencryptador+"\n");
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -158,7 +168,15 @@ public class Cliente extends javax.swing.JFrame {
     private void SalidaEventoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SalidaEventoActionPerformed
        try{
        salida = new DataOutputStream(cliente.getOutputStream());
-       salida.writeUTF(nombre+" : "+this.mensaje.getText());
+       String texto=mensaje.getText(),encryption="";
+       int ascii=0;
+        
+        for(int i=0;i<texto.length();i++){
+            ascii=texto.charAt(i);
+            encryption=encryption+(char) (ascii+3);
+        }
+           System.out.println("texto encriptado:"+encryption);
+       salida.writeUTF(mensaje.getText());
        this.mensaje.setText(" ");
        }catch(Exception e){
        

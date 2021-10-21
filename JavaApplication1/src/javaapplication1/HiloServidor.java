@@ -31,7 +31,7 @@ public class HiloServidor extends Thread{
         this.nombre=nombre;
         usuarioActivo.add(this);
         for(int i=0;i<usuarioActivo.size();i++){
-            usuarioActivo.get(i).enviosMensajes(nombre+"se ah conectado.");
+            usuarioActivo.get(i).enviosMensajes("");
         }
     }
     
@@ -41,10 +41,16 @@ public class HiloServidor extends Thread{
             try{
                 entrada=new DataInputStream(Cliente.getInputStream());
                 mensaje=entrada.readUTF();
-                
+                String texto = mensaje,encryption="";
+                int ascii=0;
+
+                for(int i=0;i<texto.length();i++){
+                    ascii=texto.charAt(i);
+                    encryption=encryption+(char) (ascii+3);
+                }
                 for(int i=0;i<usuarioActivo.size();i++){
-                    usuarioActivo.get(i).envioMensajes(mensaje);
-                    server.mensajeria("Mensaje enviado:"+mensaje);//aqui poner la encriptacion
+                    usuarioActivo.get(i).enviosMensajes(encryption);
+                    server.mensajeria("Mensaje enviado:"+encryption);//aqui poner la encriptacion
                     
                 }
             }catch (Exception e){
