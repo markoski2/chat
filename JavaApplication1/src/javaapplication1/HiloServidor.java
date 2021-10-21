@@ -18,7 +18,7 @@ import javax.swing.DefaultListModel;
  */
 public class HiloServidor extends Thread{
     private DataInputStream entrada;
-    private DataInputStream salida;
+    private DataOutputStream salida;
     private Servidor server;
     private Socket Cliente;
     public static Vector<HiloServidor> usuarioActivo=new Vector();
@@ -35,7 +35,7 @@ public class HiloServidor extends Thread{
         }
     }
     
-    public run(){
+    public void run(){
         String mensaje ="";
         while(true){
             try{
@@ -43,7 +43,7 @@ public class HiloServidor extends Thread{
                 mensaje=entrada.readUTF();
                 
                 for(int i=0;i<usuarioActivo.size();i++){
-                    usuarioActivo.get(i).enviosMensajes(mensaje);
+                    usuarioActivo.get(i).envioMensajes(mensaje);
                     server.mensajeria("Mensaje enviado:"+mensaje);//aqui poner la encriptacion
                     
                 }

@@ -34,7 +34,7 @@ public class Cliente extends javax.swing.JFrame {
             DataOutputStream salida = new DataOutputStream(cliente.getOutputStream());
             salida.writeUTF(nombre);
             HiloCliente hilo = new HiloCliente(cliente, this);
-            hilo start();
+            hilo.start();
         }catch(Exception e){
              JOptionPane.showMessageDialog(this, e.toString());
         }

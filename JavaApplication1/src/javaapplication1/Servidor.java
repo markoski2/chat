@@ -116,7 +116,7 @@ public class Servidor extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 
-    private void mensajeria(String msg) {
+    void mensajeria(String msg) {
        this.jTextArea1.append(" "+msg+"\n");
     }
 }
