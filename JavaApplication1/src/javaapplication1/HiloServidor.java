@@ -43,7 +43,7 @@ public class HiloServidor extends Thread{
                 mensaje=entrada.readUTF();
                 
                 for(int i=0;i<usuarioActivo.size();i++){
-                    usuarioActivo.get(i).envioMensajes(mensaje);
+                    usuarioActivo.get(i).enviosMensajes(mensaje);
                     server.mensajeria("Mensaje enviado:"+mensaje);//aqui poner la encriptacion
                     
                 }
