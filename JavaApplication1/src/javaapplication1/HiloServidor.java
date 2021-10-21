@@ -31,7 +31,7 @@ public class HiloServidor extends Thread{
         this.nombre=nombre;
         usuarioActivo.add(this);
         for(int i=0;i<usuarioActivo.size();i++){
-            usuarioActivo.get(i).envioMensajes(nombre+"se ah conectado.");
+            usuarioActivo.get(i).enviosMensajes(nombre+"se ah conectado.");
         }
     }
     
@@ -62,7 +62,7 @@ public class HiloServidor extends Thread{
         
     }
     
-    private void envioMensajes(String msg) throws Exception{
+    private void enviosMensajes(String msg) throws Exception{
         salida=new DataOutputStream(Cliente.getOutputStream());
         salida.writeUTF(msg);//Envio de mensaje
         DefaultListModel modelo=new DefaultListModel();
