@@ -4,6 +4,12 @@
  */
 package javaapplication1;
 
+import java.io.DataInputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import javax.swing.JOptionPane;
+
+
 /**
  *
  * @author x230
@@ -13,8 +19,29 @@ public class Servidor extends javax.swing.JFrame {
     /**
      * Creates new form Servidor
      */
+    private ServerSocket server;
+    private final int PUERTOH=1000;
     public Servidor() {
         initComponents();
+        
+        try{
+            server = new ServerSocket(PUERTOH);
+            mensajeria("*.:Servidor Conectado:.\n");
+            super.setVisible(true);
+            
+            
+            while(true){
+            Socket cliente = server.accept();
+            mensajeria("Cliente conectado desde la dirección: "+cliente.getInetAddress().getHostAddress());
+            
+            DataInputStream entrada = new DataInputStream(cliente.getInputStream());
+            
+            HiloServidor hilo = new HiloServidor(cliente, entrada.readUTF(), this);
+            hilo.start();
+            }
+        }catch(Exception e){
+        JOptionPane.showMessageDialog(this, e.toString());
+        }
     }
 
     /**
@@ -26,17 +53,24 @@ public class Servidor extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
         );
 
         pack();
@@ -78,5 +112,11 @@ public class Servidor extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
+
+    private void mensajeria(String msg) {
+       this.jTextArea1.append(" "+msg+"\n");
+    }
 }
