@@ -28,11 +28,26 @@ public class HiloServidor extends Thread{
     public HiloServidor(Socket socketcliente,String nombre,Servidor serv) throws Exception{
         this.Cliente=socketcliente;
         this.server=serv;
+        for(int i=0;i<usuarioActivo.size();i++){//for para recorrer la lista de usuarios 
+            if(usuarioActivo.get(i).nombre.equals(nombre)){//si el nombre existe, se le agrega numeros random
+                nombre=nombre+agregar_numeros(nombre.length());
+            }
+            System.out.println("usuario?:"+usuarioActivo.get(i).nombre);
+        }
         this.nombre=nombre;
         usuarioActivo.add(this);
         for(int i=0;i<usuarioActivo.size();i++){
-            usuarioActivo.get(i).enviosMensajes("");
+            usuarioActivo.get(i).envioMensajes(nombre+"se ah conectado.");
         }
+    }
+    public String agregar_numeros(int num){
+        String extra="";
+        for(int i=0;i<num;i++){
+            int numero = (int)(Math.random()*10+1);
+            extra+=Integer.toString(numero);
+        }
+        return extra;
+        
     }
     
     public void run(){
@@ -41,17 +56,11 @@ public class HiloServidor extends Thread{
             try{
                 entrada=new DataInputStream(Cliente.getInputStream());
                 mensaje=entrada.readUTF();
-                String texto = mensaje,encryption="";
-                int ascii=0;
-
-                for(int i=0;i<texto.length();i++){
-                    ascii=texto.charAt(i);
-                    encryption=encryption+(char) (ascii+3);
-                }
+                
                 for(int i=0;i<usuarioActivo.size();i++){
-                    usuarioActivo.get(i).enviosMensajes(encryption);
-                    server.mensajeria("Mensaje enviado:"+encryption);//aqui poner la encriptacion
-                    
+                    usuarioActivo.get(i).envioMensajes(mensaje);
+                    //server.mensajeria("Mensaje enviado:"+mensaje);//aqui poner la encriptacion
+                    server.mensajeria2("Mensaje enviado:"+mensaje);//aqui poner la encriptacion2
                 }
             }catch (Exception e){
                 break;
@@ -68,7 +77,7 @@ public class HiloServidor extends Thread{
         
     }
     
-    private void enviosMensajes(String msg) throws Exception{
+    private void envioMensajes(String msg) throws Exception{
         salida=new DataOutputStream(Cliente.getOutputStream());
         salida.writeUTF(msg);//Envio de mensaje
         DefaultListModel modelo=new DefaultListModel();

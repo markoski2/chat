@@ -123,4 +123,21 @@ public class Servidor extends javax.swing.JFrame {
     void mensajeria(String msg) {
        this.jTextArea1.append(" "+msg+"\n");
     }
+    void mensajeria2(String msg) {
+         String desencryptador="";
+                int ascii=0;
+                int code_text=0;
+                for(int i=0;i<msg.length();i++){
+                    if(code_text==1){
+                        ascii=msg.charAt(i);
+                    desencryptador=desencryptador+(char)(ascii-3);
+                    }else{
+                        ascii=msg.charAt(i);
+                    }
+                    if(msg.charAt(i)==':'){
+                        code_text=1;
+                    }
+                }
+       this.jTextArea1.append(" "+desencryptador+"\n");
+    }
 }
