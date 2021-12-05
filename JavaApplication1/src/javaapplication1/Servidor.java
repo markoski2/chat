@@ -4,6 +4,7 @@
  */
 package javaapplication1;
 
+import Tools.FileHelper;
 import java.io.DataInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -21,27 +22,36 @@ public class Servidor extends javax.swing.JFrame {
      */
     private ServerSocket server;
     private final int PUERTOH=1000;
+    
+    private FileHelper fhelper;
+    
     public Servidor() {
-        initComponents();
-        
-        try{
-            server = new ServerSocket(PUERTOH);
-            mensajeria("*.:Servidor Conectado:.\n");
-            super.setVisible(true);
-            
-            
-            while(true){
-            Socket cliente = server.accept();
-            mensajeria("Cliente conectado desde la dirección: "+cliente.getInetAddress().getHostAddress());
-            
-            DataInputStream entrada = new DataInputStream(cliente.getInputStream());
-            
-            HiloServidor hilo = new HiloServidor(cliente, entrada.readUTF(), this);
-            hilo.start();
-            }
-        }catch(Exception e){
-        JOptionPane.showMessageDialog(this, e.toString());
-        }
+		initComponents();
+
+		fhelper = new FileHelper("Servidor JFrame");
+		
+		this.fhelper.escribir("Servidor iniciado");
+		
+		try{
+			server = new ServerSocket(PUERTOH);
+			mensajeria("*.:Servidor Conectado:.\n");
+			super.setVisible(true);
+
+			while(true){
+				Socket cliente = server.accept();
+				mensajeria("Cliente conectado desde la dirección: "+cliente.getInetAddress().getHostAddress());
+
+				DataInputStream entrada = new DataInputStream(cliente.getInputStream());
+
+				HiloServidor hilo = new HiloServidor(cliente, entrada.readUTF(), this);
+				hilo.start();
+			}
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(this, e.toString());
+			fhelper.escribir(e.getMessage());
+		}
+		
+		fhelper.escribir("Servidor Finalizado");
     }
 
     /**
@@ -123,21 +133,22 @@ public class Servidor extends javax.swing.JFrame {
     void mensajeria(String msg) {
        this.jTextArea1.append(" "+msg+"\n");
     }
+    
     void mensajeria2(String msg) {
          String desencryptador="";
-                int ascii=0;
-                int code_text=0;
-                for(int i=0;i<msg.length();i++){
-                    if(code_text==1){
-                        ascii=msg.charAt(i);
-                    desencryptador=desencryptador+(char)(ascii-3);
-                    }else{
-                        ascii=msg.charAt(i);
-                    }
-                    if(msg.charAt(i)==':'){
-                        code_text=1;
-                    }
-                }
+			int ascii=0;
+			int code_text=0;
+			for(int i=0;i<msg.length();i++){
+				if(code_text==1){
+					ascii=msg.charAt(i);
+					desencryptador=desencryptador+(char)(ascii-3);
+				}else{
+					ascii=msg.charAt(i);
+				}
+				if(msg.charAt(i)==':'){
+					code_text=1;
+				}
+			}
        this.jTextArea1.append(" "+desencryptador+"\n");
     }
 }

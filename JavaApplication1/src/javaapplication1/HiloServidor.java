@@ -5,6 +5,7 @@
  */
 package javaapplication1;
 
+import Tools.FileHelper;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.ObjectOutputStream;
@@ -25,7 +26,11 @@ public class HiloServidor extends Thread{
     private String nombre;
     private ObjectOutputStream salidaObjeto;
     
+    private FileHelper fhelper;
+    
     public HiloServidor(Socket socketcliente,String nombre,Servidor serv) throws Exception{
+	    fhelper = new FileHelper("HiloServidor");
+	    
         this.Cliente=socketcliente;
         this.server=serv;
         for(int i=0;i<usuarioActivo.size();i++){//for para recorrer la lista de usuarios 
@@ -36,10 +41,12 @@ public class HiloServidor extends Thread{
         }
         this.nombre=nombre;
         usuarioActivo.add(this);
-        for(int i=0;i<usuarioActivo.size();i++){
-            usuarioActivo.get(i).envioMensajes(nombre+"se ah conectado.");
-        }
+		fhelper.escribir("Se conectó " + nombre);
+		for(int i=0;i<usuarioActivo.size();i++){
+			usuarioActivo.get(i).envioMensajes(nombre+" se ha conectado.");
+		}
     }
+    
     public String agregar_numeros(int num){
         String extra="";
         for(int i=0;i<num;i++){
@@ -47,35 +54,37 @@ public class HiloServidor extends Thread{
             extra+=Integer.toString(numero);
         }
         return extra;
-        
     }
     
     public void run(){
         String mensaje ="";
-        while(true){
-            try{
-                entrada=new DataInputStream(Cliente.getInputStream());
-                mensaje=entrada.readUTF();
-                
-                for(int i=0;i<usuarioActivo.size();i++){
-                    usuarioActivo.get(i).envioMensajes(mensaje);
-                    //server.mensajeria("Mensaje enviado:"+mensaje);//aqui poner la encriptacion
-                    server.mensajeria2("Mensaje enviado:"+mensaje);//aqui poner la encriptacion2
-                }
-            }catch (Exception e){
-                break;
-            }
-        }
+		while(true){
+			try{
+				entrada=new DataInputStream(Cliente.getInputStream());
+				mensaje=entrada.readUTF();
+
+				for(int i=0;i<usuarioActivo.size();i++){
+					usuarioActivo.get(i).envioMensajes(mensaje);
+					//server.mensajeria("Mensaje enviado:"+mensaje);//aqui poner la encriptacion
+					server.mensajeria2("Mensaje enviado:"+mensaje);//aqui poner la encriptacion2
+				}
+			}catch (Exception e){
+				fhelper.escribir(e.toString());
+				break;
+			}
+		}
         
-        usuarioActivo.removeElement(this);
-        server.mensajeria("El usuario se ha desconectado.");
-        try{
-            Cliente.close();
-        }catch (Exception e){
-            
-        }
-        
-    }
+		fhelper.escribir(nombre + " se desconectó");
+		usuarioActivo.removeElement(this);
+		server.mensajeria("El usuario se ha desconectado.");
+	
+		try{
+		    Cliente.close();
+		}catch (Exception e){
+			  fhelper.escribir(e.toString());
+		}
+
+	}
     
     private void envioMensajes(String msg) throws Exception{
         salida=new DataOutputStream(Cliente.getOutputStream());
@@ -88,7 +97,4 @@ public class HiloServidor extends Thread{
         salidaObjeto =new ObjectOutputStream(Cliente.getOutputStream());
         salidaObjeto.writeObject(modelo);
     }
-    
-    
-    
 }
